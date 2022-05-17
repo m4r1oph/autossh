@@ -193,16 +193,16 @@ clusterssh_conocidos(){
             cluster_conocidos=$client1
         elif [[ -z $Nclient3 ]]
             then
-                cluster_conocidos=''$client1' '$client2''
+                cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2''
         else
-            cluster_conocidos=''$client1' '$client2' '$client3''
+            cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
         fi
-    cat /dev/null > ./Datos/clusters
+    cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
     echo -e '¿Quieres hacer cluster ssh a tus contactos conocidos? [si/no]'
     read conf
     if [[ $conf == si ]]
         then
-            echo -e 'autossh '$cluster_conocidos'' >> ./Datos/clusters
+            echo -e 'autossh '$cluster_conocidos'' >> /home/$Nmaster/.clusterssh/clusters 
             cssh autossh
         else
             clusterssh_desconocidos
