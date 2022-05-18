@@ -188,7 +188,14 @@ lista_contactos_vacia(){
         fi
 }
 clusterssh_desconocidos(){
-    cat /dev/null > ./Datos/clusters
+    cinstalado=$(which clusterssh) 
+    if [[ $cinstalado != "" ]]
+        then
+            
+        else
+            sudo apt install -y clusterssh
+    fi
+    cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
     echo -e '¿A que IPs quieres haacer cluster ssh?'
     echo -e 'Introduce los nombres y las IPs de la siguiente manera (equipo1@IPequipo1 equipo2@IPequipo2...)'
     read ipcluster
@@ -204,23 +211,30 @@ clusterssh_desconocidos(){
 clusterssh_conocidos(){
     if [[ $Nclient1 != "" ]]
         then
-            sleep 3
-            cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
+            cinstalado=$(which clusterssh) 
+            if [[ $cinstalado != "" ]]
+                then
+                    cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
+                else
+                    sudo apt install -y clusterssh
+                    cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
+            fi
+            cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
+            echo -e '¿Quieres hacer cluster ssh a tus contactos conocidos? [si/no]'
+            read conf
+            if [[ $conf == si ]]
+                then
+                    echo -e 'autossh '$cluster_conocidos'' >> /home/$Nmaster/.clusterssh/clusters 
+                    cssh autossh
+                else
+                    clusterssh_desconocidos
+            fi
         else
             echo -e "No tienes contactos aún"
             sleep 2
             clusterssh_desconocidos
         fi
-    cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
-    echo -e '¿Quieres hacer cluster ssh a tus contactos conocidos? [si/no]'
-    read conf
-    if [[ $conf == si ]]
-        then
-            echo -e 'autossh '$cluster_conocidos'' >> /home/$Nmaster/.clusterssh/clusters 
-            cssh autossh
-        else
-            clusterssh_desconocidos
-    fi
+   
 }
 tipo_de_conexion(){
     echo -e '\n¿Que tipo de conexión quieres hacer? \n  1.-Conexión ssh \n  2.-Copiar archivos \n  3.-Instalar paquetes \n  4.-Conexión por cssh'
