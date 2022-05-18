@@ -198,18 +198,18 @@ clusterssh_desconocidos(){
         do
             clusterssh_desconocidos
         done
-    echo -e 'autossh '$ipcluster'' >> ./Datos/clusters
+    echo -e 'autossh '$ipcluster'' >> /home/$Nmaster/.clusterssh/clusters 
     cssh autossh
 }
 clusterssh_conocidos(){
-    if [[ -z $Nclient2 ]]
+    if [[ $Nclient1 != "" ]]
         then
-            cluster_conocidos=$client1
-        elif [[ -z $Nclient3 ]]
-            then
-                cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2''
-        else
+            sleep 3
             cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
+        else
+            echo -e "No tienes contactos aún"
+            sleep 2
+            clusterssh_desconocidos
         fi
     cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
     echo -e '¿Quieres hacer cluster ssh a tus contactos conocidos? [si/no]'
@@ -250,7 +250,7 @@ tipo_de_conexion(){
                     ssh -o "StrictHostKeyChecking no" $Nclient@$Iclient -X 'sudo -S apt install '$Pclient''
             elif [[ $Amaster == 4 ]]
                 then
-                    if [[ -f /etc/clusters ]]
+                    if [[ -f /home/$Nmaster/.clusterssh/clusters ]]
                         then
                             if [[ $num_lin == 0 ]]
                                 then
@@ -262,13 +262,9 @@ tipo_de_conexion(){
                                 
                             fi
                     else
-                        touch /etc/clusters
-                        if [[ $num_lin == 0 ]]
-                                then
-                                    clusterssh_desconocidos
-                            else
-                                clusterssh_conocidos
-                            fi
+                        sudo apt install clusterssh
+                        touch /home/$Nmaster/.clusterssh/clusters
+                        clusterssh_desconocidos
                     fi
             fi
         else
@@ -337,25 +333,13 @@ tipo_de_conexion_comprobacion(){
                     fi
             elif [[ $Amaster == 4 ]]
                 then
-                    if [[ -f ./Datos/clusters ]]
-                        then
-                            if [[ $num_lin == 0 ]]
-                                then
-                                    clusterssh_desconocidos
-                                    echo -e 'autossh '$ipcluster'' >> ./Datos/clusters
-                                    cssh autossh
-                            else
-                                clusterssh_conocidos
-                                
-                            fi
+                    if [[ -f /home/$Nmaster/.clusterssh/clusters ]]
+                    then
+                        clusterssh_conocidos
                     else
-                        touch ./Datos/clusters
-                        if [[ $num_lin == 0 ]]
-                                then
-                                    clusterssh_desconocidos
-                            else
-                                clusterssh_conocidos
-                            fi
+                        touch /home/$Nmaster/.clusterssh/clusters
+                        clusterssh_desconocidos
+
                     fi
             fi
         else
