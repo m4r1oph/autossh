@@ -9,6 +9,15 @@ distros=./distros.txt
 if [[ -f ./Datos/ip_master.txt ]]
     then
         Imaster=$(cat ./Datos/ip_master.txt | sed -n 1p)
+        #Guardamos posible cambio de IP
+        distro=$(lsb_release -d)
+        echo $distro >> $distros
+        if grep -o 'Ubuntu' "$distros";
+            then 
+                Imaster_nw=`hostname -I | awk '{print $1}'`
+            else 
+                Imaster_nw=`hostname -i | awk '{print $1}'`
+        fi
     else
         distro=$(lsb_release -d)
         echo $distro >> $distros
@@ -18,6 +27,11 @@ if [[ -f ./Datos/ip_master.txt ]]
             else 
                 Imaster=`hostname -i | awk '{print $1}'`
         fi
+fi
+#Comprobar cambio de IP
+if [[ $Imaster != $Imaster_nw ]]
+    then
+        Imaster=$Imaster_nw
 fi
 #Borrado de fichero de distros
 if [[ -f ./distros.txt ]]
@@ -381,4 +395,3 @@ echo -e '\nHola '$Nmaster' ¿Esta es tu dirección IP '$Imaster'? [si/no]'
         
     fi
 tipo_de_conexion_comprobacion
-
