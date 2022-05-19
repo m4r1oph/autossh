@@ -194,6 +194,7 @@ clusterssh_desconocidos(){
             echo
         else
             sudo apt install -y clusterssh
+            mkdir -R /home/$Nmaster/.clusterssh
             touch /home/$Nmaster/.clusterssh/clusters
     fi
     cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
@@ -218,6 +219,7 @@ clusterssh_conocidos(){
                     cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
                 else
                     sudo apt install -y clusterssh
+                    mkdir -R /home/$Nmaster/.clusterssh
                     cluster_conocidos=''$Nclient1@$Iclient1' '$Nclient2@$Iclient2' '$Nclient3@$Iclient3''
             fi
             cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
