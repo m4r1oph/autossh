@@ -1,7 +1,7 @@
 #!/bin/bash
-#
+
 clear
-#
+
 #Nombre del master
 Nmaster=`whoami`
 distros=./distros.txt
@@ -11,7 +11,7 @@ if [[ -f ./Datos/ip_master.txt ]]
         Imaster=$(cat ./Datos/ip_master.txt | sed -n 1p)
         #Guardamos posible cambio de IP
         distro=$(lsb_release -d)
-        echo $distro >> $distros
+        echo $distro >> ./$distros
         if grep -o 'Ubuntu' "$distros";
             then 
                 Imaster_nw=`hostname -I | awk '{print $1}'`
@@ -20,7 +20,7 @@ if [[ -f ./Datos/ip_master.txt ]]
         fi
     else
         distro=$(lsb_release -d)
-        echo $distro >> $distros
+        echo $distro >> ./$distros
         if grep -o 'Ubuntu' "$distros";
             then 
                 Imaster=`hostname -I | awk '{print $1}'`
@@ -29,7 +29,7 @@ if [[ -f ./Datos/ip_master.txt ]]
         fi
 fi
 #Comprobar cambio de IP
-if [[ $Imaster != $Imaster_nw ]]
+if [[ $Imaster != $Imaster_nw && $Imaster_nw != "" ]]
     then
         Imaster=$Imaster_nw
 fi
@@ -191,7 +191,7 @@ clusterssh_desconocidos(){
     cinstalado=$(which clusterssh) 
     if [[ $cinstalado != "" ]]
         then
-            
+            echo
         else
             sudo apt install -y clusterssh
     fi
