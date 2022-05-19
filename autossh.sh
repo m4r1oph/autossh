@@ -194,6 +194,7 @@ clusterssh_desconocidos(){
             echo
         else
             sudo apt install -y clusterssh
+            touch /home/$Nmaster/.clusterssh/clusters
     fi
     cat /dev/null > /home/$Nmaster/.clusterssh/clusters 
     echo -e '¿A que IPs quieres haacer cluster ssh?'
@@ -348,13 +349,13 @@ tipo_de_conexion_comprobacion(){
             elif [[ $Amaster == 4 ]]
                 then
                     if [[ -f /home/$Nmaster/.clusterssh/clusters ]]
-                    then
-                        clusterssh_conocidos
-                    else
-                        touch /home/$Nmaster/.clusterssh/clusters
-                        clusterssh_desconocidos
-
-                    fi
+                        then
+                            clusterssh_conocidos
+                        else
+                            touch /home/$Nmaster/.clusterssh/clusters
+                            clusterssh_desconocidos
+    
+                        fi
             fi
         else
         echo "Introduce un numero correcto"
