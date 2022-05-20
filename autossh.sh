@@ -294,12 +294,27 @@ conexion_cp(){
     read Rmaster
     echo -e '\n¿Donde quiere pegar el archivo? Por defecto será el home del receptor. Introduce la ruta(/home/sunombre/Escritorio...)'
     read Rclient
-    if [[ -z $Rclient ]]
+    echo -e '\n¿Quieres enviar el archivo a todos tus contactos registrados?[s/n]'
+    read conf_conct
+    if [[ $Rclient != "" ]]
         then
-            scp $Rmaster $Nclient@$Iclient:/home/$Nclient
+            if [[ $conf_conct == "s" ]]
+                then
+                    echo -e ''$Nclient1@$Iclient1:$Rclient'\n'$Nclient2@$Iclient2:$Rclient'\n'$Nclient3@$Iclient3:$Rclient'' > clientes.txt
+                    cat clientes.txt | xargs -I HOST scp $Rmaster HOST
+                else
+                    scp $Rmaster $Nclient@$Iclient:$Rclient
+                fi
         else
-            scp $Rmaster $Nclient@$Iclient:$Rclient
-    fi  
+            if [[ $conf_conct == "s" ]]
+                then
+                    echo -e ''$Nclient1@$Iclient1:/home/$Nclient1'\n'$Nclient2@$Iclient2:$Rclient/home/$Nclient2'' > clientes.txt
+                    cat clientes.txt | xargs -I HOST scp $Rmaster HOST
+                else
+                    scp $Rmaster $Nclient@$Iclient:/home/$Nclient
+                fi
+    fi
+    #rm clientes.txt  
 }
 instalar_paquetes(){
     echo '¿Que paquete/s quieres instalar? Introduce su nombre(Ej:Vim)'
@@ -331,7 +346,6 @@ tipo_de_conexion_comprobacion(){
                             claves
                             conexion_cp
                         else
-                            seleccion_conocidos
                             conexion_cp
                     fi
             elif [[ $Amaster == 3 ]]
